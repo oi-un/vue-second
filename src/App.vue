@@ -47,7 +47,9 @@ function increaseYearFired(event){
 </script>
 
 <template>
-  <todo-header :title="title"></todo-header>
+  <todo-header :title="title">
+    <p>헤더 컴포넌트로 컨텐츠를 전달</p>
+  </todo-header>
   
   <todo-main :todos="todos"></todo-main>
 
