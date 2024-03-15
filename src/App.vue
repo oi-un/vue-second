@@ -39,7 +39,11 @@ function getTodoButtonClick(){
 function yearButtonClicked() {
   year.value++;
 }
-
+// increaseYear 이벤트가 발생했을 때 처리
+function increaseYearFired(event){
+  console.log('increase year event fired' + event);
+  year.value = year.value + event;
+}
 </script>
 
 <template>
@@ -47,7 +51,7 @@ function yearButtonClicked() {
   
   <todo-main :todos="todos"></todo-main>
 
-  <todo-footer :year="year" :name="developerName"></todo-footer>
+  <todo-footer :year="year" :name="developerName" @increaseYear="increaseYearFired"></todo-footer>
 </template>
 
 <style scoped>
