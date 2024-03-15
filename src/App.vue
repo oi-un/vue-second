@@ -1,9 +1,33 @@
 <script setup>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import TodoHeader from './components/TodoHeader.vue';
+import TodoFooter from './components/TodoFooter.vue'
+import TodoMain from './components/TodoMain.vue'
 
-const todos = ref([]);
+// states
+const title = ref('Todo 관리');
+const year = ref(2024);
+const developerName = ref('choi');
+const todos = ref([]);  // { value : [] }
+// const todos = reactive([]);
 
+// year 값이 바뀌면 todos 데이터를 가져오기
+watch(year, async (newYear) => {
+  const res = await axios.get('https://jsonplaceholder.typicode.com/todos')
+  console.log('watch 함수 호출됨')
+  todos.value = res.data;
+})
+
+// 화면이 로딩된 직후에 실행되는 훅 (콜백함수)
+onMounted(async () => {
+  // axios.get('https://jsonplaceholder.typicode.com/todos')
+  // .then(res => todos.value = res.data)
+  const res = await axios.get('https://jsonplaceholder.typicode.com/todos');
+  todos.value = res.data 
+})
+
+// 이벤트 처리 코드
 function getTodoButtonClick(){
   //promise 방식
   fetch('https://jsonplaceholder.typicode.com/todos')
@@ -11,15 +35,7 @@ function getTodoButtonClick(){
   .then(json => todos.value = json)
 }
 
-onMounted(async () => {
-  // axios.get('https://jsonplaceholder.typicode.com/todos')
-  // .then(res => todos.value = res.data)
-  
-  const res = await axios.get('https://jsonplaceholder.typicode.com/todos');
-  todos.value = res.data 
-})
-
-const year = ref(2024)
+// year 값을 바꾸는 함수
 function yearButtonClicked() {
   year.value++;
 }
@@ -27,20 +43,11 @@ function yearButtonClicked() {
 </script>
 
 <template>
-  <h1>Todos</h1>
-  <hr>
+  <todo-header :title="title"></todo-header>
   
-  <button @click="getTodoButtonClick">할일 목록 가져오기</button>
-  <h3>할일 목록</h3>
-  <ul>
-    <li v-for="todo in todos" :key="todo.userId">
-      {{ todo.title }} - {{ todo.completed ? '완료' : '진행중' }}
-    </li>
-  </ul>
-  <hr>
+  <todo-main :todos="todos"></todo-main>
 
-  <button @click="yearButtonClicked">연도를 1년 증가시키기</button>
-  <h3>Copyright {{ year }} by choi</h3>
+  <todo-footer :year="year" :name="developerName"></todo-footer>
 </template>
 
 <style scoped>
